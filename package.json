@@ -1,0 +1,24 @@
+{
+  "name": "net-utils",
+  "version": "1.0.0",
+  "description": "A simple network utility package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "net-utils"
+  },
+  "keywords": [
+    "networking"
+  ],
+  "author": "Benjamin Cardona",
+  "license": "ISC",
+  "dependencies": {
+    "ip-cidr": "^2.0.6",
+    "net-ping": "^1.2.3",
+    "network": "^0.4.1",
+    "nodearp": "^1.0.2"
+  }
+}
