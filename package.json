@@ -1,5 +1,5 @@
 {
-  "name": "net-utils",
+  "name": "@rochismo/net-utils",
   "version": "1.0.0",
   "description": "A simple network utility package",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "net-utils"
+    "url": "https://github.com/rochismo/net-utils"
   },
   "keywords": [
     "networking"
