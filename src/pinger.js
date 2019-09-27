@@ -2,6 +2,8 @@ const ping = require("net-ping");
 const ip_cidr = require("ip-cidr");
 const { getProgress, getDetails } = require('./utils')
 
+
+
 class Pinger {
     /**
      * 

@@ -2,9 +2,16 @@ const net = require("network");
 const arp = require("nodearp")
 const os = require("os");
 
+
+
+/**
+ * This will get the CIDR of your network based on your active interface IP
+ * @param {String} ip 
+ */
+
 function determineCidr(ip) {
     const ifaces = os.networkInterfaces();
-    let cidrValue = "192.168.1.0/24"
+    let cidrValue = "192.168.1.0/24" // Default
     for (const iface in ifaces) {
         const ifaceObj = ifaces[iface];
 
@@ -24,8 +31,14 @@ function getActiveIface() {
         })
     });
 }
+/**
+ * This will look your arp table and find the gateway that's provided by the user.
+ * @param {String} gateway 
+ * @returns {Promise}
+ */
 
 function getGatewayMac(gateway) {
+    if (!gateway) return console.error("No gateway provided")
     return new Promise(resolve => {
         arp.entries(entries => {
             const mac = entries.filter(entry => entry.ip === gateway)[0].mac
@@ -56,5 +69,4 @@ module.exports = {
             resolve({ ip_cidr, gatewayMac })
         })
     }
-
 }
