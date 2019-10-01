@@ -1,9 +1,15 @@
 const ping = require("net-ping");
 const ip_cidr = require("ip-cidr");
-const { getProgress, getDetails } = require('./utils')
+const utils = require('./utils')
 
-
-
+const defaultSettings = {
+    networkProtocol: ping.NetworkProtocol.IPv4,
+    packetSize: 16,
+    retries: 1,
+    sessionId: (process.pid % 65535),
+    timeout: 2000,
+    ttl: 128
+};
 class Pinger {
     /**
      * 
@@ -12,15 +18,17 @@ class Pinger {
      * @param {Object} sse
      *  
      */
-    constructor(address, sse) {
-        this.hosts = []
+    constructor(settings, sse) {
+        this.hosts = [];
         this.sse = sse;
-        if (address) {
-            this.hosts = new ip_cidr(address).toArray();
+        this.settings = {
+            ...settings,
+            ...defaultSettings
         }
+        this.session = ping.createSession(this.settings);
         this.aliveHosts = [];
-        this.session = ping.createSession();
-        getProgress.bind(this);
+
+        utils.getProgress.bind(this);
     }
 
     /**
@@ -28,52 +36,42 @@ class Pinger {
      * @param {String} ip 
      */
 
-    async pingSweep(ip) {
-        const cidr = ip.split("/")[1];
-        if (!cidr) return console.error("No cidr specified")
+    pingSweep(ip) {
         this.setRange(ip);
         this.populate();
-        await this.fulfillPromisesAndFilterHosts();
-        return this.aliveHosts;
+        return this.fulfillPromisesAndFilterHosts();
+        
     }
 
     populate() {
         if (!this.hosts.length) {
             return console.error("There are no hosts available")
         }
-
         this.hosts.forEach(host => {
-            this.aliveHosts.push(new Promise((res, rej) => {
-                this.session.pingHost(host, function (error, target) {
-                    // We always want to resolve and not stop if host is not alive
-                    if (!error) {
-                        res(host);
-                    } else {
-                        res(false);
-                    }
-                });
-            }));
+            this.aliveHosts.push(this.ping(host));
         });
     }
 
     async fulfillPromisesAndFilterHosts() {
-        const alive = await getProgress(this.aliveHosts,
-            (p) => {
+        const alive = await utils.getProgress(this.aliveHosts,
+            (progress) => {
                 if (this.sse) {
-                    this.sse.send(p.toFixed(2))
+                    this.sse.send(progress.toFixed(2))
                 }
             })
-        this.aliveHosts = alive.filter(host => host !== false)
+        return alive.filter(host => host !== false)
     }
 
     setRange(ip) {
+        const cidr = ip.split("/")[1];
+        if (!cidr) return console.error("No cidr specified")
         this.aliveHosts = []
         this.hosts = new ip_cidr(ip).toArray();
     }
 
     ping(ip) {
         return new Promise(res => {
-            this.session.pingHost(ip, function (err, target) {
+            this.session.pingHost(ip, (err, target) => {
                 if (!err) {
                     res(target);
                 } else {
@@ -84,4 +82,4 @@ class Pinger {
     }
 };
 
-module.exports = {Pinger, getDetails};
+module.exports = { Pinger, utils };

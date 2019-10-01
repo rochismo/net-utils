@@ -31,8 +31,16 @@ For now, this module is capable of:
 
 ```js
 
-const {Pinger, getDetails} = require('./src/pinger');
-const pingerInstance = new Pinger();
+const {Pinger, utils} = require('./src/pinger');
+// Optional
+const settings = {
+    packetSize: 16,
+    retries: 1,
+    sessionId: (process.pid % 65535),
+    timeout: 2000,
+    ttl: 128
+}
+const pingerInstance = new Pinger(settings);
 
 ```
 
@@ -41,7 +49,7 @@ const pingerInstance = new Pinger();
 ```js
 
 (async function(){
-    const data = await getDetails();
+    const data = await utils.getDetails();
     console.log(data);
 })();
 
@@ -77,6 +85,7 @@ Sample output
 ```
 
 # TODO
-* [] Make the module more functional
-* [] Export all functionalities
-* [] Refactor Pinger class
+* [x] Make the module more functional
+* [x] Export all functionalities
+* [x] Refactor Pinger class
+* [ ] Create basic port scanner

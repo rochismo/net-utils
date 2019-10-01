@@ -2,8 +2,6 @@ const net = require("network");
 const arp = require("nodearp")
 const os = require("os");
 
-
-
 /**
  * This will get the CIDR of your network based on your active interface IP
  * @param {String} ip 
@@ -48,6 +46,9 @@ function getGatewayMac(gateway) {
 }
 
 module.exports = {
+    determineCidr,
+    getActiveIface,
+    getGatewayMac,
     getProgress: function(promises, progress_cb) {
         let resolvedCount = 0;
         progress_cb(0);
