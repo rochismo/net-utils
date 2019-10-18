@@ -22,6 +22,7 @@ For now, this module is capable of:
 * Ping a single host
 * Ping sweep your network CIDR (Or any range of hosts within a specified CIDR)
 * Track progress of ping sweep
+    * Send the progress through a Server Sent Event
 
 
 
@@ -32,14 +33,7 @@ For now, this module is capable of:
 ```js
 
 const {Pinger, utils} = require('./src/pinger');
-// Optional
-const settings = {
-    packetSize: 16,
-    retries: 1,
-    sessionId: (process.pid % 65535),
-    timeout: 2000,
-    ttl: 128
-}
+
 const pingerInstance = new Pinger(settings);
 
 ```
