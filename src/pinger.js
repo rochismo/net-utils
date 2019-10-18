@@ -1,67 +1,35 @@
-const ping = require("net-ping");
+const ping = require("ping");
 const ip_cidr = require("ip-cidr");
 const utils = require('./utils')
-
-const defaultSettings = {
-    networkProtocol: ping.NetworkProtocol.IPv4,
-    packetSize: 16,
-    retries: 1,
-    sessionId: (process.pid % 65535),
-    timeout: 2000,
-    ttl: 128
-};
+const Host = require("./models/host.js")
 class Pinger {
     /**
-     * 
-     * 
-     * @param {String} address 
-     * @param {Object} sse
+     * @param {Object} sse -> Used for server sent events to track progress
      *  
      */
-    constructor(settings, sse) {
+    constructor(sse) {
         this.hosts = [];
         this.sse = sse;
-        this.settings = {
-            ...settings,
-            ...defaultSettings
-        }
-        this.session = ping.createSession(this.settings);
         this.aliveHosts = [];
-
         utils.getProgress.bind(this);
     }
 
     /**
      * The ip parameter must contain the network cidr
      * @param {String} ip 
+     * @returns {Array|Promise} hosts
      */
 
     pingSweep(ip) {
         this.setRange(ip);
         this.populate();
         return this.fulfillPromisesAndFilterHosts();
-        
     }
 
-    populate() {
-        if (!this.hosts.length) {
-            return console.error("There are no hosts available")
-        }
-        this.hosts.forEach(host => {
-            this.aliveHosts.push(this.ping(host));
-        });
-    }
-
-    async fulfillPromisesAndFilterHosts() {
-        const alive = await utils.getProgress(this.aliveHosts,
-            (progress) => {
-                if (this.sse) {
-                    this.sse.send(progress.toFixed(2))
-                }
-            })
-        return alive.filter(host => host !== false)
-    }
-
+    /**
+     * 
+     * @param {String} ip -> Must contain the cidr 
+     */
     setRange(ip) {
         const cidr = ip.split("/")[1];
         if (!cidr) return console.error("No cidr specified")
@@ -69,16 +37,29 @@ class Pinger {
         this.hosts = new ip_cidr(ip).toArray();
     }
 
-    ping(ip) {
-        return new Promise(res => {
-            this.session.pingHost(ip, (err, target) => {
-                if (!err) {
-                    res(target);
-                } else {
-                    res(false)
+    populate() {
+        if (!this.hosts.length) {
+            return console.error("There are no hosts available")
+        }
+        this.aliveHosts = this.hosts.map(host => {
+            return this.ping(host);
+        });
+    }
+
+    async fulfillPromisesAndFilterHosts() {
+        const pingedHosts = await utils.getProgress(this.aliveHosts,
+            (progress) => {
+                if (this.sse) {
+                    this.sse.send(progress.toFixed(2))
                 }
             })
+        return pingedHosts.filter(host => host.alive).map(data => {
+            return new Host(data)
         })
+    }
+
+    ping(ip) {
+        return ping.promise.probe(ip);
     }
 };
 
