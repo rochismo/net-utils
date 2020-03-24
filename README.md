@@ -32,7 +32,7 @@ For now, this module is capable of:
 
 ```js
 
-const {pinger, utils} = require('./src/pinger');
+const {pinger, utils} = require('@rochismo/net-utils');
 
 ```
 
