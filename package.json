@@ -1,6 +1,6 @@
 {
   "name": "@rochismo/net-utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple network utility package",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "author": "Benjamin Cardona",
   "license": "ISC",
   "dependencies": {
-    "ip-cidr": "^2.0.6",
+    "ip-cidr": "^2.0.8",
     "network": "^0.4.1",
     "nodearp": "^1.0.2",
     "ping": "^0.2.2"
