@@ -36,7 +36,6 @@ function getActiveIface() {
  */
 
 function getGatewayMac(gateway) {
-    if (!gateway) return console.error("No gateway provided")
     return new Promise(resolve => {
         arp.entries(entries => {
             const mac = entries.filter(entry => entry.ip === gateway)[0].mac
@@ -63,11 +62,12 @@ module.exports = {
 
     getDetails: function () {
         return new Promise(async resolve => {
-            const {gateway_ip, ip_address} = await getActiveIface();
-            const gatewayMac = await getGatewayMac(gateway_ip);
-            const cidr = determineCidr(ip_address)
-            const ip_cidr = `${gateway_ip}/${cidr}`
-            resolve({ ip_cidr, gatewayMac })
+            const ifaceData = await getActiveIface();
+            const ip = ifaceData.gateway_ip ? ifaceData.gateway_ip : "192.168.1.1";
+            //const gatewayMac = await getGatewayMac(ip);
+            const cidr = determineCidr(ip)
+            const ip_cidr = `${ip}/${cidr}`
+            resolve({ ip_cidr, ifaceData })
         })
     }
 }
