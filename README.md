@@ -32,9 +32,7 @@ For now, this module is capable of:
 
 ```js
 
-const {Pinger, utils} = require('./src/pinger');
-
-const pingerInstance = new Pinger(settings);
+const {pinger, utils} = require('./src/pinger');
 
 ```
 
@@ -49,27 +47,20 @@ const pingerInstance = new Pinger(settings);
 
 ```
 
-Sample output
-```json
-{ ip_cidr: '172.16.0.210/20', gatewayMac: 'd4:ca:6d:3a:b0:a4' }
-```
-
 ## Ping a single host
 
 ```js
 (async function() {
-    console.log(await pingerInstance.ping("192.168.1.1"))
-    //Output: 172.16.7.11 (if it's alive it will return the ip address)
+    console.log(await pinger.ping("192.168.1.1"))
 
-    console.log(await pingerInstance.ping("192.168.1.50"))
-    //Output: false (Boolean, if it's not alive it will return false)
+    console.log(await pinger.ping("192.168.1.50"))
 })()
 ```
 
 ## Ping sweep
 ```js
 (async function() {
-    const aliveHosts = await pingerInstance.pingSweep("192.168.1.0/24") // If you didn't instantiate without a ip + CIDR
+    const aliveHosts = await pinger.pingSweep("192.168.1.0/24") // If you didn't instantiate without a ip + CIDR
 
     /* 
         Sample output: ["192.168.1.1", "192.168.1.5"]
@@ -82,4 +73,3 @@ Sample output
 * [x] Make the module more functional
 * [x] Export all functionalities
 * [x] Refactor Pinger class
-* [ ] Create basic port scanner
