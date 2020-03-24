@@ -18,6 +18,7 @@
   "dependencies": {
     "@rochismo/ping": "^0.2.3",
     "ip-cidr": "^2.0.8",
+    "is-ip": "^3.1.0",
     "ping": "^0.2.2",
     "systeminformation": "^4.23.1"
   }

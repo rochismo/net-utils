@@ -40,6 +40,7 @@ class Pinger {
         this.aliveHosts = this.hosts.map(host => {
             return this.ping(host);
         });
+        
     }
 
     async fulfillPromisesAndFilterHosts() {
@@ -51,6 +52,7 @@ class Pinger {
                 }
             }
         );
+        console.log(pingedHosts)
         return pingedHosts
             .filter(host => host.alive)
             .map(data => {

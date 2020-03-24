@@ -1,6 +1,6 @@
 const os = require("os");
 const systemInformation = require("systeminformation");
-
+const isIp = require("is-ip");
 
 /**
  * This will get the CIDR of your network based on your active interface IP
@@ -8,7 +8,7 @@ const systemInformation = require("systeminformation");
  */
 
 module.exports = {
-    getProgress: function(promises, progress_cb) {
+    getProgress(promises, progress_cb) {
         let resolvedCount = 0;
         progress_cb(0);
         for (const promise of promises) {
@@ -20,7 +20,7 @@ module.exports = {
         return Promise.all(promises);
     },
 
-    getDetails: function () {
+    getDetails() {
         return new Promise(async resolve => {
             const defaultGateway = await systemInformation.networkGatewayDefault();
             const defaultIface = await systemInformation.networkInterfaceDefault();
@@ -29,5 +29,8 @@ module.exports = {
             ifaceData.gateway = defaultGateway;
             resolve(ifaceData)
         })
+    },
+    isValidIp(ip) {
+      return isIp.v4(ip);
     }
 }
