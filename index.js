@@ -1,2 +1,5 @@
 const {Pinger, utils} = require('./src/pinger');
-module.exports = {Pinger, utils};
+module.exports = (() => {
+    const pinger = new Pinger();
+    return {pinger, utils};
+})();;
