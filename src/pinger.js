@@ -60,10 +60,7 @@ class Pinger {
     }
 
     ping(ip) {
-        return ping.promise.probe(ip, {
-            min_reply: 4,
-            timeout: 1000
-        });
+        return ping.promise.probe(ip);
     }
 
     /**

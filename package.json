@@ -1,6 +1,6 @@
 {
   "name": "@rochismo/net-utils",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "description": "A simple network utility package",
   "main": "index.js",
   "scripts": {
