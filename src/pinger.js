@@ -52,7 +52,6 @@ class Pinger {
                 }
             }
         );
-        console.log(pingedHosts)
         return pingedHosts
             .filter(host => host.alive)
             .map(data => {
@@ -61,7 +60,10 @@ class Pinger {
     }
 
     ping(ip) {
-        return ping.promise.probe(ip);
+        return ping.promise.probe(ip, {
+            min_reply: 4,
+            timeout: 1000
+        });
     }
 
     /**

@@ -13,8 +13,5 @@ module.exports = class Host {
             max: data.max,
             avg: data.avg
         };
-        this.openPorts = {
-
-        }
     }
 }
