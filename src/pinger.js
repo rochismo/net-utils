@@ -7,7 +7,7 @@ class Pinger {
      * @param {Object} sse -> Used for server sent events to track progress
      *
      */
-    constructor(sse, selfAddress) {
+    constructor(sse) {
         this.hosts = [];
         this.sse = sse;
         this.aliveHosts = [];
