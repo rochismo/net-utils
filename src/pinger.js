@@ -11,7 +11,6 @@ class Pinger {
         this.hosts = [];
         this.sse = sse;
         this.aliveHosts = [];
-        this.selfAddress = selfAddress;
         utils.getProgress.bind(this);
     }
 
